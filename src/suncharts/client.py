@@ -16,7 +16,7 @@ from suncharts_api.api_client import ApiClient
 
 PRODUCTION_BASE_URL = "https://api.suncharts.app"
 SANDBOX_BASE_URL = "https://sandbox-api.suncharts.app"
-USER_AGENT = "suncharts-sdk-python/0.1.0"
+USER_AGENT = "suncharts-sdk-python/26.10.16.1"
 IDEMPOTENT = {"GET", "HEAD", "PUT", "DELETE", "OPTIONS"}
 
 

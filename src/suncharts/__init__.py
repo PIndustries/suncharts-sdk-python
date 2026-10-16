@@ -15,7 +15,7 @@ from suncharts.client import (
     SunChartsError,
 )
 
-__version__ = "0.1.0"
+__version__ = "26.10.16.1"
 
 __all__ = [
     "PRODUCTION_BASE_URL",

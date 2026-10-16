@@ -12,7 +12,7 @@ Python 3.9+. MIT licensed.
 ## Install
 
 ```bash
-pip install "git+https://github.com/PIndustries/suncharts-sdk-python@v0.1.0"
+pip install "git+https://github.com/PIndustries/suncharts-sdk-python@26.10.16.1"
 ```
 
 (PyPI package `suncharts-sdk` coming soon.)
@@ -82,3 +82,9 @@ scripts/generate.sh            # regenerate src/suncharts_api from openapi.json 
 
 `openapi.json` is synced from the API automatically (a pull request is opened when the spec changes); CI fails
 if `src/suncharts_api` is not exactly what the generator produces. Don't edit `src/suncharts_api` by hand.
+
+## Versioning
+
+Releases use the P.Industries format `YY.MM.DD.<build-of-day>` (UTC date), e.g. `26.10.16.1`; the git tag is exactly
+that (no `v`). PEP 440 accepts the 4-part form, so the package version is identical. Bump with `scripts/version.sh set $(scripts/version.sh next)`; merging a `VERSION` change to
+`main` tags the release automatically (`.github/workflows/release.yml`).
