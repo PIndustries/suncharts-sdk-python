@@ -15,8 +15,8 @@ if [ ! -f "$JAR" ]; then
 fi
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 python3 scripts/normalize-spec.py openapi.json > "$TMP/spec.json"
-java -jar "$JAR" generate -q -g python -i "$TMP/spec.json" -o "$TMP/out" --skip-validate-spec \
+java -jar "$JAR" generate -g python -i "$TMP/spec.json" -o "$TMP/out" --skip-validate-spec \
   --additional-properties=packageName=suncharts_api,projectName=suncharts-sdk,packageVersion=0.0.0,hideGenerationTimestamp=true \
-  --global-property=apiTests=false,modelTests=false,apiDocs=false,modelDocs=false
+  --global-property=apiTests=false,modelTests=false,apiDocs=false,modelDocs=false > "$TMP/gen.log" 2>&1 || { cat "$TMP/gen.log"; exit 1; }
 rm -rf src/suncharts_api && cp -R "$TMP/out/suncharts_api" src/suncharts_api
 echo "generated src/suncharts_api from $(python3 -c 'import json;print(json.load(open("openapi.json"))["info"]["version"])') spec"
