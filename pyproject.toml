@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "suncharts-sdk"
+version = "0.1.0"
+description = "Official Python SDK for the SunCharts API (generated from the OpenAPI spec + OAuth2/retry/pagination helpers)"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [{ name = "P.Industries" }]
+keywords = ["suncharts", "ehr", "fhir", "sdk", "oauth2"]
+classifiers = ["Programming Language :: Python :: 3", "Typing :: Typed", "Intended Audience :: Developers"]
+dependencies = [
+  "urllib3>=2.1,<3",
+  "python-dateutil>=2.8.2",
+  "pydantic>=2,<3",
+  "typing-extensions>=4.7.1",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8", "pytest-httpserver>=1.0"]
+
+[project.urls]
+Homepage = "https://api.suncharts.app/docs"
+Source = "https://github.com/PIndustries/suncharts-sdk-python"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/suncharts", "src/suncharts_api"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
