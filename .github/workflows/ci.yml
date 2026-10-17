@@ -5,34 +5,37 @@ on:
   workflow_dispatch:
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, phx, fleet, org]
     strategy: { matrix: { python: ["3.9", "3.12", "3.13"] } }
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "${{ matrix.python }}" }
-      - run: pip install -e '.[test]'
+      # uv's standalone CPython builds work on the fleet's Ubuntu 26.04 (actions/setup-python has no builds for it).
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "${{ matrix.python }}", activate-environment: true, enable-cache: false }
+      - run: uv pip install -e '.[test]'
       - run: pytest -q
   generated-up-to-date:
     # src/suncharts_api must be exactly what scripts/generate.sh produces from openapi.json.
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, phx, fleet, org]
     steps:
       - uses: actions/checkout@v4
+      - name: per-runner cache dir (runners share one $HOME on the fleet host)
+        run: echo "XDG_CACHE_HOME=$RUNNER_TOOL_CACHE/xdg-cache" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "21" }
       - run: scripts/generate.sh
       - run: git status --porcelain && git diff --exit-code
   sandbox-smoke:
     if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, phx, fleet, org]
     env:
       SUNCHARTS_CLIENT_ID: ${{ secrets.SUNCHARTS_SANDBOX_CLIENT_ID }}
       SUNCHARTS_CLIENT_SECRET: ${{ secrets.SUNCHARTS_SANDBOX_CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - run: pip install -e .
+      - uses: astral-sh/setup-uv@v6
+        with: { python-version: "3.12", activate-environment: true, enable-cache: false }
+      - run: uv pip install -e .
       - name: smoke (skipped without sandbox secrets)
         run: |
           if [ -z "$SUNCHARTS_CLIENT_ID" ]; then echo "::notice::no sandbox secrets; skipping"; exit 0; fi
